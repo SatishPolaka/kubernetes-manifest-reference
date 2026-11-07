@@ -1,0 +1,11 @@
+apiVersion: v1                                      # Core Kubernetes API version
+kind: ConfigMap                                     # Kubernetes ConfigMap resource
+metadata:                                           # Resource metadata section
+  name: web-config                                  # Name of this resource or component
+data:                                               # Non-confidential key/value configuration stored in this ConfigMap
+  APP_ENV: "dev"                                    # Example development environment value
+  LOG_LEVEL: "INFO"                                 # Example application log level
+  APP_PORT: "8080"
+  application.properties: |                         # Multiline configuration can be stored using a YAML block scalar.
+    feature.enabled=true
+    retry.count=3
