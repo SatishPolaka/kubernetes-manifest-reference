@@ -125,5 +125,3 @@ Before using them in production:
 6. Test manifests in a staging cluster, run server-side dry-run, review `kubectl diff`, and validate rollback and disaster-recovery procedures.
 7. Set resource values, probe endpoints, disruption budgets and replica counts based on load tests and service-level objectives.
 
-The `satishpolaka/cars:v1` image is retained from the practical notes. Verify its availability,
-contents, security scan results and immutable digest before production use.
