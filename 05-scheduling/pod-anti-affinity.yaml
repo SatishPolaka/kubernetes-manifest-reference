@@ -1,0 +1,26 @@
+apiVersion: apps/v1                                 # API version for workload controllers
+kind: Deployment                                    # Kubernetes Deployment resource
+metadata:                                           # Resource metadata section
+  name: spread-web                                  # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  replicas: 3                                       # Desired number of Pod replicas
+  selector:                                         # Selects the Pods managed or affected by this resource
+    matchLabels:                                    # Labels that must match the selected Pods or nodes
+      app: spread-web                               # Example label value used by selectors or organisation
+  template:                                         # Pod template used by the controller to create Pods
+    metadata:                                       # Resource metadata section
+      labels:                                       # Key/value labels used for grouping and selecting resources
+        app: spread-web                             # Example label value used by selectors or organisation
+    spec:                                           # Desired state/configuration for this resource
+      affinity:                                     # Advanced rules for placing this Pod on nodes relative to labels or other Pods
+        podAntiAffinity:                            # Avoids placing this Pod near Pods matching the specified labels
+          preferredDuringSchedulingIgnoredDuringExecution:   # Weighted scheduling preference, not a hard requirement
+            - weight: 100
+              podAffinityTerm:                      # Defines the matching Pods and topology domain for affinity
+                labelSelector:
+                  matchLabels:                      # Labels that must match the selected Pods or nodes
+                    app: spread-web                 # Example label value used by selectors or organisation
+                topologyKey: kubernetes.io/hostname   # Apply affinity across nodes sharing this hostname label
+      containers:                                   # List of containers that will run inside each Pod
+        - name: nginx                               # Name of this list item/resource
+          image: satishpolaka/cars:v1               # Image and tag used to create the container

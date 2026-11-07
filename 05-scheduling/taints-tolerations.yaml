@@ -1,0 +1,15 @@
+# Taint is applied to a NODE with a command, not by this Pod manifest:
+# kubectl taint nodes NODE_NAME dedicated=dev:NoSchedule
+apiVersion: v1                                      # Core Kubernetes API version
+kind: Pod                                           # Kubernetes Pod resource
+metadata:                                           # Resource metadata section
+  name: dev-only-eligible-pod                       # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  tolerations:                                      # Allows this Pod to tolerate matching node taints
+    - key: dedicated                                # Label or taint key used by this rule
+      operator: Equal                               # Taint key, value and effect must all match
+      value: dev                                    # Example development environment value
+      effect: NoSchedule                            # Do not schedule new non-tolerating Pods on this node
+  containers:                                       # List of containers that will run inside each Pod
+    - name: nginx                                   # Name of this list item/resource
+      image: nginx:stable                           # Image and tag used to create the container

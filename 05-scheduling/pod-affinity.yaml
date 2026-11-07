@@ -1,0 +1,17 @@
+apiVersion: v1                                      # Core Kubernetes API version
+kind: Pod                                           # Kubernetes Pod resource
+metadata:                                           # Resource metadata section
+  name: pod-affinity-example                        # Name of this resource or component
+  labels:                                           # Key/value labels used for grouping and selecting resources
+    app: database-client                            # Example label value used by selectors or organisation
+spec:                                               # Desired state/configuration for this resource
+  affinity:                                         # Advanced rules for placing this Pod on nodes relative to labels or other Pods
+    podAffinity:                                    # Places this Pod near Pods matching the specified labels
+      requiredDuringSchedulingIgnoredDuringExecution:   # Hard scheduling rule; the Pod must satisfy it when scheduled
+        - labelSelector:
+            matchLabels:                            # Labels that must match the selected Pods or nodes
+              app: frontend                         # Example label value used by selectors or organisation
+          topologyKey: kubernetes.io/hostname       # Apply affinity across nodes sharing this hostname label
+  containers:                                       # List of containers that will run inside each Pod
+    - name: nginx                                   # Name of this list item/resource
+      image: satishpolaka/cars:v1                   # Image and tag used to create the container

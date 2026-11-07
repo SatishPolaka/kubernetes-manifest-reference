@@ -1,0 +1,25 @@
+apiVersion: v1                                      # Core Kubernetes API version
+kind: Pod                                           # Kubernetes Pod resource
+metadata:                                           # Resource metadata section
+  name: pod-node-affinity                           # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  affinity:                                         # Advanced rules for placing this Pod on nodes relative to labels or other Pods
+    nodeAffinity:                                   # Schedules Pods according to node labels
+      requiredDuringSchedulingIgnoredDuringExecution:   # Hard scheduling rule; the Pod must satisfy it when scheduled
+        nodeSelectorTerms:                          # Alternative groups of node label expressions; one term must match
+          - matchExpressions:
+              - key: environment                    # Label or taint key used by this rule
+                operator: In                        # Label value must be one of the listed values
+                values:                             # Allowed label values for operators that require values
+                  - dev
+      preferredDuringSchedulingIgnoredDuringExecution:   # Weighted scheduling preference, not a hard requirement
+        - weight: 50
+          preference:                               # Preferred node label expression
+            matchExpressions:                       # Label expressions supporting operators such as In, NotIn, Exists and DoesNotExist
+              - key: disk                           # Label or taint key used by this rule
+                operator: In                        # Label value must be one of the listed values
+                values:                             # Allowed label values for operators that require values
+                  - ssd
+  containers:                                       # List of containers that will run inside each Pod
+    - name: nginx                                   # Name of this list item/resource
+      image: nginx:stable                           # Image and tag used to create the container
