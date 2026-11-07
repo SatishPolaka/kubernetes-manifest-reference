@@ -1,0 +1,18 @@
+apiVersion: autoscaling/v2                          # API version for HorizontalPodAutoscaler
+kind: HorizontalPodAutoscaler                       # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: web-hpa                                     # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  scaleTargetRef:                                   # Identifies the workload whose replica count the HPA controls
+    apiVersion: apps/v1                             # API version for workload controllers
+    kind: Deployment                                # Kubernetes Deployment resource
+    name: web-deployment                            # Name of this resource or component
+  minReplicas: 2                                    # Minimum replica count the HPA may set
+  maxReplicas: 10                                   # Maximum replica count the HPA may set
+  metrics:                                          # Metrics used by the HPA to calculate desired replicas
+    - type: Resource
+      resource:                                     # Uses a resource metric such as CPU or memory
+        name: cpu                                   # Name of this resource or component
+        target:                                     # Desired metric value for autoscaling
+          type: Utilization                         # Secret format/type expected by Kubernetes or a consuming component
+          averageUtilization: 60                    # Target average CPU use as a percentage of requested CPU

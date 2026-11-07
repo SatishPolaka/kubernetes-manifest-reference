@@ -1,0 +1,9 @@
+apiVersion: policy/v1                               # API version for PodDisruptionBudget
+kind: PodDisruptionBudget                           # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: web-pdb                                     # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  minAvailable: 2                                   # Minimum number/percentage of selected Pods that must remain available during voluntary disruption
+  selector:                                         # Selects the Pods managed or affected by this resource
+    matchLabels:                                    # Labels that must match the selected Pods or nodes
+      app: web                                      # Example label value used by selectors or organisation
