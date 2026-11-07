@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1                       # API version for StorageClass
+kind: StorageClass                                  # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: gp3-encrypted                               # Name of this resource or component
+provisioner: ebs.csi.aws.com                        # AWS EBS CSI driver; requires the driver and cloud permissions
+parameters:                                         # Storage-driver-specific provisioning settings
+  type: gp3                                         # Secret format/type expected by Kubernetes or a consuming component
+  fsType: ext4                                      # Filesystem type to format the block device with
+  encrypted: "true"                                 # Boolean enabled value
+reclaimPolicy: Retain                               # Keep the underlying volume after the claim is released
+allowVolumeExpansion: true                          # Boolean enabled value
+volumeBindingMode: WaitForFirstConsumer             # Delay volume binding/provisioning until a consuming Pod is scheduled

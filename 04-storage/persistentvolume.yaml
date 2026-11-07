@@ -1,0 +1,15 @@
+apiVersion: v1                                      # Core Kubernetes API version
+kind: PersistentVolume                              # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: local-pv-example                            # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  capacity:                                         # Capacity advertised by this PersistentVolume
+    storage: 5Gi                                    # Requested or advertised storage capacity
+  volumeMode: Filesystem                            # Present the volume as a mounted filesystem
+  accessModes:                                      # How workloads may access the storage volume; support depends on driver
+    - ReadWriteOnce                                 # Volume can be mounted read-write by a node; driver details matter
+  persistentVolumeReclaimPolicy: Retain             # Keep the underlying volume after the claim is released
+  storageClassName: manual                          # StorageClass used to provision or bind storage
+  hostPath:                                         # Uses a path on the node filesystem; generally avoid for portable production workloads
+    path: /mnt/data                                 # URL path matched by the Ingress rule
+    type: DirectoryOrCreate                         # Secret format/type expected by Kubernetes or a consuming component
