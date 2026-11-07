@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1                    # API version for Ingress and NetworkPolicy
+kind: NetworkPolicy                                 # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: allow-web-from-namespace                    # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  podSelector:                                      # Selects the Pods to which this NetworkPolicy applies
+    matchLabels:                                    # Labels that must match the selected Pods or nodes
+      app: web                                      # Example label value used by selectors or organisation
+  policyTypes:                                      # Declares whether the policy controls ingress, egress, or both
+    - Ingress                                       # Traffic direction controlled by this NetworkPolicy
+  ingress:                                          # Rules describing allowed incoming traffic
+    - from:
+        - namespaceSelector:
+            matchLabels:                            # Labels that must match the selected Pods or nodes
+              kubernetes.io/metadata.name: frontend
+      ports:                                        # Ports exposed by the container or Service configuration
+        - protocol: TCP
+          port: 80                                  # Port exposed by the Service

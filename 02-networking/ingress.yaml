@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1                    # API version for Ingress and NetworkPolicy
+kind: Ingress                                       # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: web-ingress                                 # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  ingressClassName: nginx                           # Must match an installed Ingress controller class
+  rules:                                            # RBAC permission rules granted by this Role
+    - host: app.example.com
+      http:                                         # HTTP routing configuration
+        paths:                                      # Path-based routing entries for this host
+          - path: /                                 # Filesystem or HTTP path, depending on this field's location
+            pathType: Prefix                        # How Kubernetes interprets the path match
+            backend:                                # Destination Service to which matching traffic is sent
+              service:                              # Backend Kubernetes Service
+                name: web-internal                  # Name of this resource or component
+                port:                               # Port exposed by the Service
+                  number: 80                        # Service port number used by the Ingress backend
+  # Configure TLS only after creating a TLS Secret in this namespace.
+  # tls:
+  #   - hosts:
+  #       - app.example.com
+  #     secretName: app-example-tls
