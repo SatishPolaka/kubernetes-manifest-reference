@@ -1,0 +1,13 @@
+apiVersion: v1                                      # Core Kubernetes API version
+kind: ResourceQuota                                 # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: dev-quota                                   # Name of this resource or component
+  namespace: dev                                    # Example development environment value
+spec:                                               # Desired state/configuration for this resource
+  hard:                                             # Maximum aggregate resource/count values permitted by the quota
+    pods: "5"                                       # Maximum number of Pods allowed in the namespace
+    requests.cpu: "2"                               # Quota for total CPU requests in this namespace
+    requests.memory: 2Gi                            # Quota for total memory requests in this namespace
+    limits.cpu: "4"                                 # Quota for total CPU limits in this namespace
+    limits.memory: 4Gi                              # Quota for total memory limits in this namespace
+    services: "3"                                   # Maximum number of Services allowed in the namespace

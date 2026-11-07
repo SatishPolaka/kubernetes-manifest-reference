@@ -1,0 +1,20 @@
+apiVersion: v1                                      # Core Kubernetes API version
+kind: LimitRange                                    # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: default-container-limits                    # Name of this resource or component
+  namespace: dev                                    # Example development environment value
+spec:                                               # Desired state/configuration for this resource
+  limits:                                           # LimitRange rules for defaults and allowed resource bounds
+    - type: Container
+      default:                                      # Default resource limit applied when a container omits a limit
+        cpu: 500m                                   # CPU quantity; 100m means one tenth of a CPU core
+        memory: 512Mi                               # Memory quantity; Mi and Gi are binary units
+      defaultRequest:                               # Default resource request applied when a container omits a request
+        cpu: 100m                                   # CPU quantity; 100m means one tenth of a CPU core
+        memory: 128Mi                               # Memory quantity; Mi and Gi are binary units
+      max:                                          # Maximum allowed resource value for the LimitRange
+        cpu: "2"                                    # CPU quantity; 100m means one tenth of a CPU core
+        memory: 2Gi                                 # Memory quantity; Mi and Gi are binary units
+      min:                                          # Minimum allowed resource value for the LimitRange
+        cpu: 50m                                    # CPU quantity; 100m means one tenth of a CPU core
+        memory: 64Mi                                # Memory quantity; Mi and Gi are binary units
