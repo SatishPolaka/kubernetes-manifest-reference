@@ -1,0 +1,38 @@
+apiVersion: apps/v1                                 # API version for workload controllers
+kind: Deployment                                    # Kubernetes Deployment resource
+metadata:                                           # Resource metadata section
+  name: web-deployment                              # Name of this resource or component
+  labels:                                           # Key/value labels used for grouping and selecting resources
+    app: web                                        # Example label value used by selectors or organisation
+spec:                                               # Desired state/configuration for this resource
+  replicas: 3                                       # Desired number of Pod replicas
+  revisionHistoryLimit: 10                          # Number of old ReplicaSets retained for Deployment rollback history
+  selector:                                         # Selects the Pods managed or affected by this resource
+    matchLabels:                                    # Labels that must match the selected Pods or nodes
+      app: web                                      # Example label value used by selectors or organisation
+  strategy:                                         # How the Deployment replaces old Pods with new Pods
+    type: RollingUpdate                             # Gradually replaces old Pods with new Pods
+    rollingUpdate:                                  # Controls how many Pods may be added or unavailable during an update
+      maxSurge: 1                                   # Maximum extra Pods allowed above the desired replica count during rollout
+      maxUnavailable: 0                             # Maximum desired Pods allowed to be unavailable during rollout
+  template:                                         # Pod template used by the controller to create Pods
+    metadata:                                       # Resource metadata section
+      labels:                                       # Key/value labels used for grouping and selecting resources
+        app: web                                    # Example label value used by selectors or organisation
+        environment: dev                            # Example development environment value
+    spec:                                           # Desired state/configuration for this resource
+      containers:                                   # List of containers that will run inside each Pod
+        - name: nginx                               # Name of this list item/resource
+          image: satishpolaka/cars:v1               # Image and tag used to create the container
+          imagePullPolicy: IfNotPresent             # Pull the image only if it is not already present on the node
+          ports:                                    # Ports exposed by the container or Service configuration
+            - name: http                            # Name of this list item/resource
+              containerPort: 80                     # Port on which the application listens inside the container
+              protocol: TCP                         # Use the TCP transport protocol
+          resources:                                # Defines CPU and memory requests and limits for the container
+            requests:                               # Minimum resource amounts used by the scheduler
+              cpu: 100m                             # CPU quantity; 100m means one tenth of a CPU core
+              memory: 128Mi                         # Memory quantity; Mi and Gi are binary units
+            limits:                                 # LimitRange rules for defaults and allowed resource bounds
+              cpu: 500m                             # CPU quantity; 100m means one tenth of a CPU core
+              memory: 256Mi                         # Memory quantity; Mi and Gi are binary units

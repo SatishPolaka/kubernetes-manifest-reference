@@ -1,0 +1,52 @@
+apiVersion: v1                                      # Core Kubernetes API version
+kind: Service                                       # Kubernetes Service resource
+metadata:                                           # Resource metadata section
+  name: database-headless                           # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  clusterIP: None                                   # Set to None to create a headless Service without a virtual cluster IP
+  selector:                                         # Selects the Pods managed or affected by this resource
+    app: database                                   # Example label value used by selectors or organisation
+  ports:                                            # Ports exposed by the container or Service configuration
+    - name: database                                # Name of this list item/resource
+      port: 5432                                    # Port exposed by the Service
+      targetPort: 5432                              # Pod/container port that receives Service traffic
+---
+apiVersion: apps/v1                                 # API version for workload controllers
+kind: StatefulSet                                   # Kubernetes StatefulSet resource
+metadata:                                           # Resource metadata section
+  name: database                                    # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  serviceName: database-headless                    # Governing Service used for stable StatefulSet network identity
+  replicas: 3                                       # Desired number of Pod replicas
+  selector:                                         # Selects the Pods managed or affected by this resource
+    matchLabels:                                    # Labels that must match the selected Pods or nodes
+      app: database                                 # Example label value used by selectors or organisation
+  template:                                         # Pod template used by the controller to create Pods
+    metadata:                                       # Resource metadata section
+      labels:                                       # Key/value labels used for grouping and selecting resources
+        app: database                               # Example label value used by selectors or organisation
+    spec:                                           # Desired state/configuration for this resource
+      containers:                                   # List of containers that will run inside each Pod
+        - name: database                            # Name of this list item/resource
+          image: postgres:16                        # Image and tag used to create the container
+          ports:                                    # Ports exposed by the container or Service configuration
+            - containerPort: 5432                   # Port the application listens on inside the container
+          env:                                      # Defines individual environment variables for the container
+            - name: POSTGRES_DB                     # Name of this list item/resource
+              value: appdb                          # Literal value assigned to this field or environment variable
+            - name: POSTGRES_USER                   # Name of this list item/resource
+              value: appuser                        # Literal value assigned to this field or environment variable
+            - name: POSTGRES_PASSWORD               # Name of this list item/resource
+              value: change-me-use-a-secret         # Literal value assigned to this field or environment variable
+          volumeMounts:                             # Mounts a declared Pod volume into this container
+            - name: database-data                   # Name of this list item/resource
+              mountPath: /var/lib/postgresql/data   # Filesystem path inside the container where the volume is mounted
+  volumeClaimTemplates:                             # Creates one PVC per StatefulSet Pod
+    - metadata:
+        name: database-data                         # Name of this resource or component
+      spec:                                         # Desired state/configuration for this resource
+        accessModes:                                # How workloads may access the storage volume; support depends on driver
+          - ReadWriteOnce                           # Volume can be mounted read-write by a node; driver details matter
+        resources:                                  # Defines CPU and memory requests and limits for the container
+          requests:                                 # Minimum resource amounts used by the scheduler
+            storage: 5Gi                            # Requested or advertised storage capacity

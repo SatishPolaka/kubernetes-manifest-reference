@@ -1,0 +1,16 @@
+apiVersion: v1                                      # Core Kubernetes API version
+kind: Pod                                           # Kubernetes Pod resource
+metadata:                                           # Resource metadata section
+  name: web-pod                                     # Name of this resource or component
+  labels:                                           # Key/value labels used for grouping and selecting resources
+    app: web                                        # Example label value used by selectors or organisation
+    environment: dev                                # Example development environment value
+spec:                                               # Desired state/configuration for this resource
+  containers:                                       # List of containers that will run inside each Pod
+    - name: nginx                                   # Name of this list item/resource
+      image: satishpolaka/cars:v1                   # Image and tag used to create the container
+      imagePullPolicy: IfNotPresent                 # Pull the image only if it is not already present on the node
+      ports:                                        # Ports exposed by the container or Service configuration
+        - name: http                                # Name of this list item/resource
+          containerPort: 80                         # Port on which the application listens inside the container
+          protocol: TCP                             # Use the TCP transport protocol
