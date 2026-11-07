@@ -1,0 +1,19 @@
+apiVersion: batch/v1                                # API version for Jobs and CronJobs
+kind: Job                                           # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: one-time-task                               # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  completions: 5                                    # Number of successful Job task completions required
+  parallelism: 2                                    # Maximum number of Job Pods allowed to run at the same time
+  backoffLimit: 3                                   # Number of retries before Kubernetes marks the Job as failed
+  activeDeadlineSeconds: 600                        # Maximum duration allowed for the Job before it is terminated
+  template:                                         # Pod template used by the controller to create Pods
+    spec:                                           # Desired state/configuration for this resource
+      restartPolicy: Never                          # Do not restart the container after it exits
+      containers:                                   # List of containers that will run inside each Pod
+        - name: task                                # Name of this list item/resource
+          image: busybox:1.36                       # Image and tag used to create the container
+          command:                                  # Overrides the image ENTRYPOINT with this command
+            - /bin/sh
+            - -c
+            - 'echo "Task started"; date; sleep 10; echo "Task completed"'

@@ -1,0 +1,23 @@
+apiVersion: batch/v1                                # API version for Jobs and CronJobs
+kind: CronJob                                       # Kind of RBAC role being referenced
+metadata:                                           # Resource metadata section
+  name: scheduled-task                              # Name of this resource or component
+spec:                                               # Desired state/configuration for this resource
+  schedule: "*/5 * * * *"                           # Cron schedule; this example runs every five minutes
+  concurrencyPolicy: Forbid                         # Do not start a new CronJob run while the previous run is still active
+  suspend: false                                    # Boolean disabled value
+  successfulJobsHistoryLimit: 3                     # Number of completed Jobs retained for history
+  failedJobsHistoryLimit: 1                         # Number of failed Jobs retained for history
+  jobTemplate:
+    spec:                                           # Desired state/configuration for this resource
+      backoffLimit: 2                               # Number of retries before Kubernetes marks the Job as failed
+      template:                                     # Pod template used by the controller to create Pods
+        spec:                                       # Desired state/configuration for this resource
+          restartPolicy: OnFailure                  # Restart the container only when it exits unsuccessfully
+          containers:                               # List of containers that will run inside each Pod
+            - name: task                            # Name of this list item/resource
+              image: busybox:1.36                   # Image and tag used to create the container
+              command:                              # Overrides the image ENTRYPOINT with this command
+                - /bin/sh
+                - -c
+                - 'echo "Scheduled task started"; date; echo "Scheduled task completed"'
